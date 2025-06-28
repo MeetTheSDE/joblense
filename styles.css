@@ -1,0 +1,7 @@
+mark.word-highlighted {
+  background-color: #ffeb3b;
+  padding: 0 4px;
+  border-radius: 4px;
+  font-weight: bold;
+  display: inline-block; /* keeps inline styling consistent */
+}
