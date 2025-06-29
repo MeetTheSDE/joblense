@@ -107,7 +107,6 @@ function setupHighlighting(keywords) {
 
   // Listen for page navigation events (though for SPA, MutationObserver covers most)
   // This is more for traditional page reloads/navigations if the script runs again.
-  window.addEventListener('load', scrollToFirstMatch);
   // For single-page applications that might change content without a full reload
   // you might need more specific event listeners depending on the SPA framework.
 }
