@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "LinkedIn Jobs Words Highlighter",
+    "name": "JobLens: LinkedIn Jobs Words Highlighter",
     "version": "1.0",
     "description": "Highlights specific words instantly on LinkedIn Jobs.",
     "content_scripts": [

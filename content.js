@@ -1,8 +1,8 @@
-// const defaultKeywords = ["sponsorship", "citizen", "sponsor", "authorized"];
+const defaultKeywords = ["401(k)", "Unlimited PTO", "Time management", "Sponsorship"];
 
 function getKeywords(callback) {
     chrome.storage.sync.get('keywords', (data) => {
-        callback(data.keywords && data.keywords.length ? data.keywords : "");
+        callback(data.keywords && data.keywords.length ? data.keywords : defaultKeywords);
     });
 }
 
