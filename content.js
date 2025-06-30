@@ -91,3 +91,15 @@ function setupHighlighting(keywords) {
 }
 
 getKeywords(setupHighlighting);
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === "updateKeywords" && Array.isArray(message.keywords)) {
+        console.log("Received updated keywords:", message.keywords);
+
+        chrome.storage.sync.set({ keywords: message.keywords }, () => {
+            setupHighlighting(message.keywords);
+        });
+
+        sendResponse({ status: "ok" });
+    }
+});

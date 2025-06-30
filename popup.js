@@ -25,11 +25,39 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 2000);
 
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                chrome.tabs.sendMessage(tabs[0].id, {
+                const tab = tabs[0];
+                const url = tab?.url || "";
+
+                const isLinkedInJobs = url.startsWith("https://www.linkedin.com/jobs");
+
+                if (!isLinkedInJobs) {
+                    showStatus("Only works on LinkedIn Jobs pages.", "red");
+                    return;
+                }
+
+                chrome.tabs.sendMessage(tab.id, {
                     action: "updateKeywords",
                     keywords: newKeywords
+                }, (response) => {
+                    if (chrome.runtime.lastError) {
+                        if (chrome.runtime.lastError.message.includes("Receiving end does not exist.")) {
+                            console.warn("Content script not present — ignoring.");
+                        } else {
+                            console.warn("messaging error:", chrome.runtime.lastError.message);
+                        }
+                        return;
+                    }
+                    showStatus("Keywords saved!");
+                    chrome.tabs.reload(tab.id);
                 });
             });
         });
     });
+    function showStatus(msg, color = "green") {
+        const statusDiv = document.getElementById('status');
+        statusDiv.textContent = msg;
+        statusDiv.style.color = color;
+        statusDiv.style.opacity = 1;
+        setTimeout(() => statusDiv.style.opacity = 0, 2000);
+    }
 });
