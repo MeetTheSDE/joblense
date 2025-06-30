@@ -11,12 +11,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Save keywords on button click
     saveBtn.addEventListener('click', () => {
-        const words = textarea.value
+        const newKeywords = textarea.value
             .split(',')
             .map(w => w.trim())
             .filter(Boolean);
-        chrome.storage.sync.set({ keywords: words }, () => {
+
+        chrome.storage.sync.set({ keywords: newKeywords }, () => {
             alert('Keywords saved!');
+
+            // Send message to active tab to update highlights
+            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                chrome.tabs.sendMessage(tabs[0].id, {
+                    action: "updateKeywords",
+                    keywords: newKeywords
+                });
+            });
         });
     });
 });
