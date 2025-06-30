@@ -1,8 +1,8 @@
-const defaultKeywords = ["sponsorship", "citizen", "sponsor", "authorized"];
+// const defaultKeywords = ["sponsorship", "citizen", "sponsor", "authorized"];
 
 function getKeywords(callback) {
     chrome.storage.sync.get('keywords', (data) => {
-        callback(data.keywords && data.keywords.length ? data.keywords : defaultKeywords);
+        callback(data.keywords && data.keywords.length ? data.keywords : "");
     });
 }
 
