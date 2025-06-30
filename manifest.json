@@ -1,18 +1,18 @@
 {
-	"manifest_version": 3,
-	"name": "LinkedIn Sponsorship Detector",
-	"version": "1.0",
-	"description": "Highlights the word 'sponsorship' instantly on LinkedIn.",
-	"content_scripts": [
-		{
-			"matches": ["*://*.linkedin.com/*"],
-			"js": ["content.js"],
-			"css": ["styles.css"],
-			"run_at": "document_end"
-		}
-	],
-	"action": {
-		"default_popup": "popup.html"
-	},
-	"permissions": ["storage"]
+    "manifest_version": 3,
+    "name": "LinkedIn Sponsorship Detector",
+    "version": "1.0",
+    "description": "Highlights the word 'sponsorship' instantly on LinkedIn.",
+    "content_scripts": [
+        {
+            "matches": ["*://*.linkedin.com/*"],
+            "js": ["content.js"],
+            "css": ["styles.css"],
+            "run_at": "document_end"
+        }
+    ],
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "permissions": ["storage"]
 }
