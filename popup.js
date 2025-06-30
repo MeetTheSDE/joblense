@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const newKeywords = textarea.value
             .split(',')
             .map(w => w.trim())
-            .filter(Boolean);
+            .filter(w => w.length > 1);
 
         chrome.storage.sync.set({ keywords: newKeywords }, () => {
             statusDiv.textContent = 'Keywords saved!';
