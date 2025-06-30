@@ -5,7 +5,7 @@
         <style>
             body {
                 font-family: Arial, sans-serif;
-                width: 320px;
+                width: 250px;
                 margin: 0;
                 padding: 16px;
                 background-color: #f9fafb;
@@ -18,7 +18,7 @@
             }
             textarea {
                 width: 100%;
-                height: 120px;
+                height: 80px;
                 padding: 10px;
                 font-size: 14px;
                 border: 1px solid #ccc;
@@ -50,13 +50,17 @@
         <h2>Highlight Keywords</h2>
         <textarea
             id="keywords"
-            placeholder="e.g. sponsorship, visa, citizen"
+            placeholder="e.g. Sponsorship, Visa, Citizen"
         ></textarea>
         <button id="save">Save</button>
         <div class="note">
             These keywords will be highlighted across LinkedIn posts
             automatically.
         </div>
+        <div
+            id="status"
+            style="color: green; margin-top: 10px; font-size: 14px"
+        ></div>
 
         <script src="popup.js"></script>
     </body>

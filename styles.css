@@ -3,5 +3,5 @@ mark.word-highlighted {
     padding: 0 4px;
     border-radius: 4px;
     font-weight: bold;
-    display: inline-block; /* keeps inline styling consistent */
+    display: inline-block;
 }

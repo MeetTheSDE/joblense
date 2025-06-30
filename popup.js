@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const textarea = document.getElementById('keywords');
     const saveBtn = document.getElementById('save');
+    const statusDiv = document.getElementById('status');
 
     // Load saved keywords
     chrome.storage.sync.get('keywords', (data) => {
@@ -9,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Save keywords on button click
     saveBtn.addEventListener('click', () => {
         const newKeywords = textarea.value
             .split(',')
@@ -17,9 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
             .filter(Boolean);
 
         chrome.storage.sync.set({ keywords: newKeywords }, () => {
-            alert('Keywords saved!');
+            statusDiv.textContent = 'Keywords saved!';
+            statusDiv.style.opacity = 1;
 
-            // Send message to active tab to update highlights
+            setTimeout(() => {
+                statusDiv.style.opacity = 0;
+            }, 2000);
+
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                 chrome.tabs.sendMessage(tabs[0].id, {
                     action: "updateKeywords",
