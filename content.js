@@ -64,30 +64,82 @@ function scrollToFirstMatch() {
 }
 
 function setupHighlighting(keywords) {
-    const regex = new RegExp(`\\b(${keywords.join("|")})\\b`, "gi");
+    const regex = new RegExp(`\\b(${keywords.join("|")})`, "gi");
 
-    scanAndHighlight(document.body, regex);
-    scrollToFirstMatch();
+    const potentialTargetDivs = [
+        '.jobs-search__job-details--wrapper', '.job-view-layout.jobs-details'
+    ];
 
-    const observer = new MutationObserver(mutations => {
-        let newContentAdded = false;
-        for (const mutation of mutations) {
-            for (const node of mutation.addedNodes) {
-                if (node.nodeType === Node.ELEMENT_NODE) {
-                    setTimeout(() => scanAndHighlight(node, regex), 0);
-                    newContentAdded = true;
+    let foundTargetDiv = null;
+    let initialScanComplete = false;
+
+    function observeContentChanges(divToObserve, currentRegex) {
+        const contentObserver = new MutationObserver(mutations => {
+            let newContentAdded = false;
+            for (const mutation of mutations) {
+                for (const node of mutation.addedNodes) {
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        if (divToObserve.contains(node)) {
+                            setTimeout(() => scanAndHighlight(node, currentRegex), 0);
+                            newContentAdded = true;
+                        }
+                    }
                 }
             }
+            if (newContentAdded) {
+                setTimeout(scrollToFirstMatch, 200);
+            }
+        });
+
+        contentObserver.observe(divToObserve, {
+            childList: true,
+            subtree: true
+        });
+    }
+    const mainObserver = new MutationObserver((mutations, observer) => {
+        if (foundTargetDiv) {
+            observer.disconnect();
+            return;
         }
-        if (newContentAdded) {
-            setTimeout(scrollToFirstMatch, 200);
+
+        for (const selector of potentialTargetDivs) {
+            const currentDiv = document.querySelector(selector);
+            if (currentDiv) {
+                foundTargetDiv = currentDiv;
+                // console.log(`Found a div to highlight: '${selector}'`);
+
+                scanAndHighlight(foundTargetDiv, regex);
+                if (!initialScanComplete) {
+                    scrollToFirstMatch();
+                    initialScanComplete = true;
+                }
+                observeContentChanges(foundTargetDiv, regex);
+
+                observer.disconnect();
+                return;
+            }
         }
     });
 
-    observer.observe(document.body, {
+    mainObserver.observe(document.body, {
         childList: true,
         subtree: true
     });
+
+    for (const selector of potentialTargetDivs) {
+        const currentDiv = document.querySelector(selector);
+        if (currentDiv) {
+            foundTargetDiv = currentDiv;
+            // console.log(`Found a div on initial check: '${selector}'`);
+            scanAndHighlight(foundTargetDiv, regex);
+            if (!initialScanComplete) {
+                scrollToFirstMatch();
+                initialScanComplete = true;
+            }
+            observeContentChanges(foundTargetDiv, regex);
+            break;
+        }
+    }
 }
 
 getKeywords(setupHighlighting);

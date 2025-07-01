@@ -3,10 +3,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveBtn = document.getElementById('save');
     const statusDiv = document.getElementById('status');
 
+    function showStatus(msg, color = "green") {
+        const statusDiv = document.getElementById('status');
+        statusDiv.textContent = msg;
+        statusDiv.style.color = color;
+        statusDiv.style.opacity = 1;
+        setTimeout(() => statusDiv.style.opacity = 0, 2000);
+    }
+
     // Load saved keywords
     chrome.storage.sync.get('keywords', (data) => {
-        if (data.keywords) {
+        if (data.keywords && data.keywords.length > 0) {
             textarea.value = data.keywords.join(', ');
+        } else {
+            textarea.value = '';
         }
     });
 
@@ -17,12 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .filter(w => w.length > 1);
 
         chrome.storage.sync.set({ keywords: newKeywords }, () => {
-            statusDiv.textContent = 'Keywords saved!';
-            statusDiv.style.opacity = 1;
-
-            setTimeout(() => {
-                statusDiv.style.opacity = 0;
-            }, 2000);
+            showStatus('Keywords saved to storage!');
 
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                 const tab = tabs[0];
@@ -41,23 +46,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, (response) => {
                     if (chrome.runtime.lastError) {
                         if (chrome.runtime.lastError.message.includes("Receiving end does not exist.")) {
-                            console.warn("Content script not present — ignoring.");
+                            console.warn("Content script not present on this tab (expected for non-jobs pages or after a crash).");
+                            showStatus("Page not ready for highlights. Try reloading.", "orange");
                         } else {
-                            console.warn("messaging error:", chrome.runtime.lastError.message);
+                            console.error("Messaging error:", chrome.runtime.lastError.message);
+                            showStatus("Error updating highlights.", "red");
                         }
                         return;
                     }
                     showStatus("Keywords saved!");
+                    // showStatus("Highlights updated on page!");
                     chrome.tabs.reload(tab.id);
                 });
             });
         });
     });
-    function showStatus(msg, color = "green") {
-        const statusDiv = document.getElementById('status');
-        statusDiv.textContent = msg;
-        statusDiv.style.color = color;
-        statusDiv.style.opacity = 1;
-        setTimeout(() => statusDiv.style.opacity = 0, 2000);
-    }
 });
