@@ -46,10 +46,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, (response) => {
                     if (chrome.runtime.lastError) {
                         if (chrome.runtime.lastError.message.includes("Receiving end does not exist.")) {
-                            console.warn("Content script not present on this tab (expected for non-jobs pages or after a crash).");
+                            // console.warn("Content script not present on this tab (expected for non-jobs pages or after a crash).");
                             showStatus("Page not ready for highlights. Try reloading.", "orange");
                         } else {
-                            console.error("Messaging error:", chrome.runtime.lastError.message);
+                            // console.error("Messaging error:", chrome.runtime.lastError.message);
                             showStatus("Error updating highlights.", "red");
                         }
                         return;
