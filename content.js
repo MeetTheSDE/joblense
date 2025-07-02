@@ -2,7 +2,7 @@ const defaultKeywords = ["401(k)", "Unlimited PTO", "Time management", "Sponsors
 
 function getKeywords(callback) {
     chrome.storage.sync.get('keywords', (data) => {
-        callback(data.keywords && data.keywords.length ? data.keywords : defaultKeywords);
+        callback(data.keywords || []);
     });
 }
 
@@ -64,6 +64,10 @@ function scrollToFirstMatch() {
 }
 
 function setupHighlighting(keywords) {
+    if (!keywords || keywords.length === 0) {
+        return;
+    }
+
     const regex = new RegExp(`\\b(${keywords.join("|")})`, "gi");
 
     const potentialTargetDivs = [
